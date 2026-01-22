@@ -10,6 +10,8 @@ for 2D meshes with customizable burn color and size.
 Add the plugin to your app and use `Dissolve2DMaterial`
 to render meshes with dissolve effects:
 
+[Web demo](https://partysun.itch.io/bevy-2d-shader-dissolve-effect)
+
 ```rust
 use bevy::prelude::*;
 use bevy_2d_dissolve::{Dissolve2DEffect, Dissolve2DMaterial, FlashIn};
