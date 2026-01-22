@@ -1,0 +1,31 @@
+[package]
+name = "bevy_2d_dissolve"
+version = "0.1.0"
+edition = "2024"
+authors = ["Iurii Zatsepin <hi@zatsepin.dev>"]
+license = "MIT OR Apache-2.0"
+description = "2d dissolve shader effect for Bevy."
+keywords = ["shaders", "bevy", "gamedev"]
+repository = "https://github.com/Partysun/bevy_2d_dissolve"
+homepage = "https://github.com/Partysun/bevy_2d_dissolve"
+
+exclude = ["examples/*", "*.webp"]
+
+[dependencies]
+bevy = { version = "0.18.0", default-features = false, features = [
+  "bevy_asset",
+  "bevy_render",
+] }
+
+[dev-dependencies]
+bevy = { version = "0.18.0", features = ["2d"] }
+
+[features]
+default = ["webgl2"]
+webgl2 = ["bevy/webgl2"]
+webgpu = ["bevy/webgpu"]
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "s"
+strip = "debuginfo"
