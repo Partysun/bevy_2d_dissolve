@@ -5,6 +5,24 @@ for 2D meshes with customizable burn color and size.
 
 ![showcase](demo-example-simple.webp)
 
+## Installation
+
+Add the plugin to your `Cargo.toml`:
+
+```toml
+# From Git with embedded noise texture (recommended)
+bevy_2d_dissolve = { git = "https://github.com/Partysun/bevy_2d_dissolve", features = ["embedded_noise"] }
+```
+
+### Feature Flags
+
+- **`embedded_shader`** (enabled by default): Embeds the WGSL shader in the binary. Disable with `default-features = false` if you provide external shader files.
+
+> **⚠️ Important Notice about `embedded_noise`**
+>
+> - **Enabled**: Includes the default noise texture in the binary. Use this if you want the bundled noise texture without needing external asset files.
+> - **Disabled**: Allows you to provide your own noise texture. You must either load a custom texture or ensure `textures/noise.png` is available in your assets directory.
+
 ## Summary
 
 Add the plugin to your app and use `Dissolve2DMaterial`

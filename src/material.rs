@@ -5,6 +5,9 @@ use bevy::{
     sprite_render::{AlphaMode2d, Material2d, Material2dPlugin},
 };
 
+#[cfg(any(feature = "embedded_shader", feature = "embedded_noise"))]
+use bevy::asset::embedded_asset;
+
 /// A 2D material for rendering dissolve and burn effects on meshes.
 ///
 /// The material uses a `DissolveParams` uniform struct to control the dissolve effect properties
@@ -91,7 +94,13 @@ pub struct Dissolve2DMaterial {
 
 impl Material2d for Dissolve2DMaterial {
     fn fragment_shader() -> ShaderRef {
-        ShaderRef::Path("shaders/dissolve_2d.wgsl".into())
+        #[cfg(feature = "embedded_shader")]
+        let path = "embedded://bevy_2d_dissolve/assets/shaders/dissolve_2d.wgsl";
+
+        #[cfg(not(feature = "embedded_shader"))]
+        let path = "shaders/dissolve_2d.wgsl";
+
+        ShaderRef::Path(path.into())
     }
 
     fn alpha_mode(&self) -> AlphaMode2d {
@@ -114,6 +123,18 @@ pub struct Dissolve2DMaterialPlugin;
 
 impl Plugin for Dissolve2DMaterialPlugin {
     fn build(&self, app: &mut App) {
+        // Embed shader at compile time (enabled by default)
+        #[cfg(feature = "embedded_shader")]
+        {
+            embedded_asset!(app, "assets/shaders/dissolve_2d.wgsl");
+        }
+
+        // Embed noise texture at compile time (optional)
+        #[cfg(feature = "embedded_noise")]
+        {
+            embedded_asset!(app, "assets/textures/noise.png");
+        }
+
         app.add_plugins(Material2dPlugin::<Dissolve2DMaterial>::default())
             .add_systems(PostStartup, apply_default_dissolve_texture);
     }
@@ -125,12 +146,17 @@ impl Plugin for Dissolve2DMaterialPlugin {
 /// [`Dissolve2DMaterial`] instances that have `noise_texture` set to `None`.
 /// This ensures the dissolve effect works without requiring users to manually specify a noise texture.
 ///
-/// The default texture is loaded from `textures/noise.png`.
+/// The default texture is loaded from `textures/noise.png` or embedded if the `embedded_noise` feature is enabled.
 fn apply_default_dissolve_texture(
     mut materials: ResMut<Assets<Dissolve2DMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
+    #[cfg(feature = "embedded_noise")]
+    let texture = asset_server.load("embedded://bevy_2d_dissolve/assets/textures/noise.png");
+
+    #[cfg(not(feature = "embedded_noise"))]
     let texture = asset_server.load("textures/noise.png");
+
     for (_, material) in materials.iter_mut() {
         if material.noise_texture.is_none() {
             material.noise_texture = Some(texture.clone());

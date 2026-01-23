@@ -1,6 +1,6 @@
 [package]
 name = "bevy_2d_dissolve"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Iurii Zatsepin <hi@zatsepin.dev>"]
 license = "MIT OR Apache-2.0"
@@ -21,9 +21,11 @@ bevy = { version = "0.18.0", default-features = false, features = [
 bevy = { version = "0.18.0", features = ["2d"] }
 
 [features]
-default = ["webgl2"]
+default = ["webgl2", "embedded_shader"]
 webgl2 = ["bevy/webgl2"]
 webgpu = ["bevy/webgpu"]
+embedded_shader = []
+embedded_noise = []
 
 [profile.wasm-release]
 inherits = "release"
